@@ -1,5 +1,16 @@
 import os
 
+for key in ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET"):
+    value = os.getenv(key)
+    if value:
+        os.environ[key] = (
+            value
+            .replace("\n", "")
+            .replace("\r", "")
+            .replace("\\n", "")
+            .strip()
+        )
+
 import modal
 from telegram import (
     Update,
