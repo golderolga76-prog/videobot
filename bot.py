@@ -136,10 +136,10 @@ async def button_click(
             "Белая лошадь бежит по берегу моря на закате."
         )
 
-    async def text_message(
+async def text_message(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
-):
+  ):
     if not context.user_data.get("waiting_prompt"):
         await update.message.reply_text(
             "Выберите действие:",
@@ -212,7 +212,7 @@ async def button_click(
         )
        
     
-    async def gift_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def gift_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if str(update.effective_user.id) != str(ADMIN_ID):
         await update.message.reply_text("⛔ Нет доступа.")
         return
