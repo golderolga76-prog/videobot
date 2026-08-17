@@ -41,7 +41,7 @@ def main_menu():
         [
             InlineKeyboardButton(
                 "🤖 AI Assistant",
-                url="https://t.me/AIasistent_bot",
+            url="https://t.me/AIasistent_bot",
             )
         ],
         [
