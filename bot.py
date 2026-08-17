@@ -169,7 +169,7 @@ async def text_message(
             filename="veostudio.mp4",
         )
 
-        await update.message.reply_video(
+      await update.message.reply_video(
             video=video,
             caption=(
                 "✅ Видео готово!\n\n"
@@ -180,24 +180,26 @@ async def text_message(
             read_timeout=120,
             connect_timeout=30,
         )
-      users = load_users()
-      record = get_user_record(users, update.effective_user.id)
 
-      access_type = context.user_data.get("video_access")
+        users = load_users()
+        record = get_user_record(users, update.effective_user.id)
 
-      if access_type == "free":
-        record["free_month"] = current_month()
-      elif access_type == "gift" and record["gifts"] > 0:
-        record["gifts"] -= 1
+        access_type = context.user_data.get("video_access")
 
-      save_users(users)
+        if access_type == "free":
+            record["free_month"] = current_month()
+        elif access_type == "gift" and record["gifts"] > 0:
+            record["gifts"] -= 1
+
+        save_users(users)
         context.user_data.pop("video_access", None)
+
         await status_message.delete()
 
         await update.message.reply_text(
             "Создать ещё одно видео?",
             reply_markup=main_menu(),
-        )
+        )  
 
     except Exception as e:
         print("VIDEO GENERATION ERROR:", repr(e))
