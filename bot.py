@@ -103,38 +103,38 @@ async def button_click(
     await query.answer()
 
     if query.data == "create_video":
-    users = load_users()
-    record = get_user_record(users, query.from_user.id)
+        users = load_users()
+        record = get_user_record(users, query.from_user.id)
 
-    if record["free_month"] != current_month():
-        context.user_data["video_access"] = "free"
-    elif record["gifts"] > 0:
-        context.user_data["video_access"] = "gift"
-    else:
-        buy_keyboard = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton(
-                    "🎁 Купить пакет и получить видео в подарок",
-                    url="https://getveostudio.app"
-                )
-            ]
-        ])
+        if record["free_month"] != current_month():
+            context.user_data["video_access"] = "free"
+        elif record["gifts"] > 0:
+            context.user_data["video_access"] = "gift"
+        else:
+            buy_keyboard = InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        "🎁 Купить пакет и получить видео в подарок",
+                        url="https://getveostudio.app"
+                    )
+                ]
+            ])
+
+            await query.message.reply_text(
+                "Вы уже использовали бесплатное видео в этом месяце.\n\n"
+                "🎁 Купите первый пакет VeoStudio за 249 грн — "
+                "и получите ещё одно 5-секундное видео в подарок.",
+                reply_markup=buy_keyboard,
+            )
+            return
+
+        context.user_data["waiting_prompt"] = True
 
         await query.message.reply_text(
-            "Вы уже использовали бесплатное видео в этом месяце.\n\n"
-            "🎁 Купите первый пакет VeoStudio за 249 грн — "
-            "и получите ещё одно 5-секундное видео в подарок.",
-            reply_markup=buy_keyboard,
+            "🎬 Напишите, какое видео вы хотите создать.\n\n"
+            "Например:\n"
+            "Белая лошадь бежит по берегу моря на закате."
         )
-        return
-
-    context.user_data["waiting_prompt"] = True
-
-    await query.message.reply_text(
-        "🎬 Напишите, какое видео вы хотите создать.\n\n"
-        "Например:\n"
-        "Белая лошадь бежит по берегу моря на закате."
-    )
 
 
 async def text_message(
