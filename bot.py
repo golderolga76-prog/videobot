@@ -136,8 +136,7 @@ async def button_click(
             "Белая лошадь бежит по берегу моря на закате."
         )
 
-
-async def text_message(
+    async def text_message(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ):
@@ -169,7 +168,7 @@ async def text_message(
             filename="veostudio.mp4",
         )
 
-      await update.message.reply_video(
+        await update.message.reply_video(
             video=video,
             caption=(
                 "✅ Видео готово!\n\n"
@@ -182,7 +181,10 @@ async def text_message(
         )
 
         users = load_users()
-        record = get_user_record(users, update.effective_user.id)
+        record = get_user_record(
+            users,
+            update.effective_user.id,
+        )
 
         access_type = context.user_data.get("video_access")
 
@@ -199,7 +201,7 @@ async def text_message(
         await update.message.reply_text(
             "Создать ещё одно видео?",
             reply_markup=main_menu(),
-        )  
+        )
 
     except Exception as e:
         print("VIDEO GENERATION ERROR:", repr(e))
@@ -208,7 +210,9 @@ async def text_message(
             "❌ Не удалось создать видео.\n\n"
             "Попробуйте ещё раз немного позже."
         )
-async def gift_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
+       
+    
+    async def gift_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if str(update.effective_user.id) != str(ADMIN_ID):
         await update.message.reply_text("⛔ Нет доступа.")
         return
