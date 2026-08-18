@@ -221,7 +221,37 @@ async def text_message(
             "❌ Не удалось создать видео.\n\n"
             "Попробуйте ещё раз немного позже."
         )
-       
+       async def stats(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    if str(update.effective_user.id) != str(ADMIN_ID):
+        await update.message.reply_text("⛔ Нет доступа.")
+        return
+
+    users = load_users()
+
+    total_users = len(users)
+    started_users = sum(
+        1 for record in users.values()
+        if record.get("started_at")
+    )
+    free_this_month = sum(
+        1 for record in users.values()
+        if record.get("free_month") == current_month()
+    )
+    gifts_available = sum(
+        int(record.get("gifts", 0) or 0)
+        for record in users.values()
+    )
+
+    await update.message.reply_text(
+        "📊 Статистика VeoStudio AI Video\n\n"
+        f"👥 Всего пользователей в базе: {total_users}\n"
+        f"▶️ Нажали Start: {started_users}\n"
+        f"🎁 Использовали бесплатное видео в этом месяце: {free_this_month}\n"
+        f"🎬 Подарочных видео на балансах: {gifts_available}"
+    )
     
 async def gift_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if str(update.effective_user.id) != str(ADMIN_ID):
@@ -271,6 +301,9 @@ def main():
             text_message,
         )
     )
+app.add_handler(
+    CommandHandler("stats", stats)
+)
 
     app.run_polling()
 
