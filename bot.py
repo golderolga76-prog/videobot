@@ -221,10 +221,10 @@ async def text_message(
             "❌ Не удалось создать видео.\n\n"
             "Попробуйте ещё раз немного позже."
         )
-       async def stats(
+async def stats(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
-):
+   ):
     if str(update.effective_user.id) != str(ADMIN_ID):
         await update.message.reply_text("⛔ Нет доступа.")
         return
