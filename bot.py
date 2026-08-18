@@ -288,9 +288,15 @@ def main():
     app.add_handler(
         CommandHandler("start", start)
     )
+
     app.add_handler(
-    CommandHandler("gift", gift_video)
-)
+        CommandHandler("gift", gift_video)
+    )
+
+    app.add_handler(
+        CommandHandler("stats", stats)
+    )
+
     app.add_handler(
         CallbackQueryHandler(button_click)
     )
@@ -300,9 +306,6 @@ def main():
             filters.TEXT & ~filters.COMMAND,
             text_message,
         )
-    )
-app.add_handler(
-        CommandHandler("stats", stats)
     )
 
     app.run_polling()
