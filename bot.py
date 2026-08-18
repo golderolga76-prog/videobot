@@ -85,6 +85,17 @@ async def start(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ):
+    users = load_users()
+    record = get_user_record(users, update.effective_user.id)
+
+    if not record.get("started_at"):
+        record["started_at"] = datetime.now(timezone.utc).isoformat()
+
+    record["username"] = update.effective_user.username or ""
+    record["first_name"] = update.effective_user.first_name or ""
+
+    save_users(users)
+
     context.user_data["waiting_prompt"] = False
 
     await update.message.reply_text(
@@ -92,7 +103,7 @@ async def start(
         "Создавайте AI-видео прямо в Telegram.\n\n"
         "Выберите действие:",
         reply_markup=main_menu(),
-    )
+    )    
 
 
 async def button_click(
