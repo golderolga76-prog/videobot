@@ -411,7 +411,70 @@ async def gift_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"✅ Пользователю {user_id} начислено 1 подарочное видео."
     )
+async def voice_message(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    if not context.user_data.get("waiting_avatar_text"):
+        await update.message.reply_text(
+            "Сначала выберите «Мой AI-двойник» и нужный образ."
+        )
+        return
 
+    avatar_name = context.user_data.get("avatar_image", "office")
+
+    status_message = await update.message.reply_text(
+        "🎙 Получила ваш голос.\n"
+        "🎬 Создаю видео AI-двойника..."
+    )
+
+    try:
+        voice = update.message.voice
+        tg_file = await context.bot.get_file(voice.file_id)
+
+        audio_bytes = await tg_file.download_as_bytearray()
+
+        generate_avatar = modal.Function.from_name(
+            "veostudio-avatar-api",
+            "generate_avatar_bot",
+        )
+
+        video_bytes = await generate_avatar.remote.aio(
+            avatar_name,
+            bytes(audio_bytes),
+        )
+
+        video = InputFile(
+            video_bytes,
+            filename="my_ai_avatar_voice.mp4",
+        )
+
+        await update.message.reply_video(
+            video=video,
+            caption="✅ Видео вашего AI-двойника готово!",
+            supports_streaming=True,
+            write_timeout=120,
+            read_timeout=120,
+            connect_timeout=30,
+        )
+
+        context.user_data.pop("avatar_image", None)
+        context.user_data["waiting_avatar_text"] = False
+
+        await status_message.delete()
+
+        await update.message.reply_text(
+            "Создать ещё одно видео?",
+            reply_markup=main_menu(update.effective_user.id),
+        )
+
+    except Exception as e:
+        print("AVATAR VOICE ERROR:", repr(e))
+
+        await status_message.edit_text(
+            "❌ Не удалось создать видео из голосового сообщения.\n"
+            "Попробуйте ещё раз."
+        )
 def main():
     if not BOT_TOKEN:
         raise RuntimeError("BOT_TOKEN is not set")
@@ -439,6 +502,10 @@ def main():
             filters.TEXT & ~filters.COMMAND,
             text_message,
         )
+    )
+    app.add_handler(
+        MessageHandler(filters.VOICE, voice_message
+                      )
     )
 
     app.run_polling()
