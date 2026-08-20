@@ -199,7 +199,7 @@ async def text_message(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
   ):
-if (
+    if (
         not context.user_data.get("waiting_prompt")
         and not context.user_data.get("waiting_avatar_text")
     ):
