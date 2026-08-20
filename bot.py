@@ -125,7 +125,7 @@ async def button_click(
        if str(query.from_user.id) != str(ADMIN_ID):
 
         await query.edit_message_text("Эта функция недоступна.")
-            return
+        return
 
         keyboard = [
             [
@@ -148,7 +148,7 @@ async def button_click(
       if str(query.from_user.id) != str(ADMIN_ID):
 
         await query.edit_message_text("Эта функция недоступна.")
-            return
+        return
 
         avatar_name = query.data.split(":", 1)[1]
 
