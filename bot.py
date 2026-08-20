@@ -162,7 +162,7 @@ if query.data == "my_avatar":
         )
         return
 
-    if query.data.startswith("avatar:"):
+if query.data.startswith("avatar:"):
       if str(query.from_user.id) != str(ADMIN_ID):
 
         await query.edit_message_text("Эта функция недоступна.")
