@@ -179,7 +179,7 @@ if query.data.startswith("avatar:"):
         )
         return
 
-    if query.data == "create_video":
+if query.data == "create_video":
         users = load_users()
         record = get_user_record(users, query.from_user.id)
 
