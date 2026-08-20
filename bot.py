@@ -56,7 +56,7 @@ def get_user_record(users, user_id):
     return users[key]
 
 
-  def main_menu(user_id=None):
+def main_menu(user_id=None):
     keyboard = [
         [
             InlineKeyboardButton(
