@@ -56,7 +56,7 @@ def get_user_record(users, user_id):
     return users[key]
 
 
-def main_menu():
+  def main_menu(user_id=None):
     keyboard = [
         [
             InlineKeyboardButton(
@@ -78,6 +78,16 @@ def main_menu():
         ],
     ]
 
+if str(user_id) == str(ADMIN_ID):
+
+     keyboard.append(
+            [
+                InlineKeyboardButton(
+                    "👩 Мой AI-двойник",
+                    callback_data="my_avatar",
+                )
+            ]
+        )
     return InlineKeyboardMarkup(keyboard)
 
 
@@ -102,7 +112,7 @@ async def start(
         "🎬 Добро пожаловать в VeoStudio AI Video!\n\n"
         "Создавайте AI-видео прямо в Telegram.\n\n"
         "Выберите действие:",
-        reply_markup=main_menu(),
+   reply_markup=main_menu(update.effective_user.id),
     )    
 
 
@@ -112,6 +122,45 @@ async def button_click(
 ):
     query = update.callback_query
     await query.answer()
+    if query.data == "my_avatar":
+       if str(query.from_user.id) != str(ADMIN_ID):
+
+        await query.edit_message_text("Эта функция недоступна.")
+            return
+
+        keyboard = [
+            [
+                InlineKeyboardButton("🏢 Офис", callback_data="avatar:office"),
+                InlineKeyboardButton("🤖 AI-студия", callback_data="avatar:studio_beige"),
+            ],
+            [
+                InlineKeyboardButton("☕ Кафе", callback_data="avatar:cafe_beige"),
+                InlineKeyboardButton("🩵 Голубой пиджак", callback_data="avatar:blue"),
+            ],
+        ]
+
+        await query.edit_message_text(
+            "👩 Выберите образ для AI-двойника:",
+            reply_markup=InlineKeyboardMarkup(keyboard),
+        )
+        return
+
+    if query.data.startswith("avatar:"):
+      if str(query.from_user.id) != str(ADMIN_ID):
+
+        await query.edit_message_text("Эта функция недоступна.")
+            return
+
+        avatar_name = query.data.split(":", 1)[1]
+
+        context.user_data["avatar_image"] = avatar_name
+        context.user_data["waiting_avatar_text"] = True
+        context.user_data["waiting_prompt"] = False
+
+        await query.edit_message_text(
+            "✍️ Теперь напишите текст, который должен произнести ваш AI-двойник."
+        )
+        return
 
     if query.data == "create_video":
         users = load_users()
@@ -151,14 +200,77 @@ async def text_message(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
   ):
-    if not context.user_data.get("waiting_prompt"):
+if (
+        not context.user_data.get("waiting_prompt")
+        and not context.user_data.get("waiting_avatar_text")
+    ):
         await update.message.reply_text(
             "Выберите действие:",
-            reply_markup=main_menu(),
+            reply_markup=main_menu(update.effective_user.id),
         )
         return
-
+      
     prompt = update.message.text.strip()
+   if context.user_data.get("waiting_avatar_text"):
+        context.user_data["waiting_avatar_text"] = False
+
+        avatar_name = context.user_data.get("avatar_image", "office")
+
+        status_message = await update.message.reply_text(
+            "🎭 Создаю видео вашего AI-двойника...\n\n"
+            "Сначала создаю голос, затем видео. Это может занять несколько минут."
+        )
+
+        try:
+            generate_voice = modal.Function.from_name(
+                "veostudio-voice",
+                "generate_voice",
+            )
+
+            audio_bytes = await generate_voice.remote.aio(prompt)
+
+            generate_avatar = modal.Function.from_name(
+                "veostudio-avatar-api",
+                "generate_avatar_bot",
+            )
+
+            video_bytes = await generate_avatar.remote.aio(
+                avatar_name,
+                audio_bytes,
+            )
+
+            video = InputFile(
+                video_bytes,
+                filename="my_ai_avatar.mp4",
+            )
+
+            await update.message.reply_video(
+                video=video,
+                caption="✅ Видео вашего AI-двойника готово!",
+                supports_streaming=True,
+                write_timeout=120,
+                read_timeout=120,
+                connect_timeout=30,
+            )
+
+            context.user_data.pop("avatar_image", None)
+
+            await status_message.delete()
+
+            await update.message.reply_text(
+                "Создать ещё одно видео?",
+                reply_markup=main_menu(update.effective_user.id),
+            )
+            return
+
+        except Exception as e:
+            print("AVATAR VIDEO ERROR:", repr(e))
+
+            await status_message.edit_text(
+                "❌ Не удалось создать видео AI-двойника.\n"
+                "Попробуйте ещё раз."
+            )
+            return
     context.user_data["waiting_prompt"] = False
 
     status_message = await update.message.reply_text(
