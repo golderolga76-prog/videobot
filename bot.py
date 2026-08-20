@@ -121,12 +121,11 @@ async def button_click(
 ):
     query = update.callback_query
     await query.answer()
-    
-    print("CALLBACK:", query.data, "USER:", query.from_user.id)
-    
-if query.data == "my_avatar":
-        print("ENTERED MY_AVATAR")
 
+    print("CALLBACK:", query.data, "USER:", query.from_user.id)
+
+    # Мой AI-двойник
+    if query.data == "my_avatar":
         if str(query.from_user.id) != str(ADMIN_ID):
             await query.edit_message_text("Эта функция недоступна.")
             return
@@ -154,19 +153,17 @@ if query.data == "my_avatar":
             ],
         ]
 
-        print("ABOUT TO SHOW AVATAR MENU")
-
         await query.edit_message_text(
             "👩 Выберите образ для AI-двойника:",
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
         return
 
-if query.data.startswith("avatar:"):
-      if str(query.from_user.id) != str(ADMIN_ID):
-
-        await query.edit_message_text("Эта функция недоступна.")
-        return
+    # Выбор образа AI-двойника
+    if query.data.startswith("avatar:"):
+        if str(query.from_user.id) != str(ADMIN_ID):
+            await query.edit_message_text("Эта функция недоступна.")
+            return
 
         avatar_name = query.data.split(":", 1)[1]
 
@@ -179,23 +176,28 @@ if query.data.startswith("avatar:"):
         )
         return
 
-if query.data == "create_video":
+    # Обычное создание видео
+    if query.data == "create_video":
         users = load_users()
         record = get_user_record(users, query.from_user.id)
 
         if record["free_month"] != current_month():
             context.user_data["video_access"] = "free"
+
         elif record["gifts"] > 0:
             context.user_data["video_access"] = "gift"
+
         else:
-            buy_keyboard = InlineKeyboardMarkup([
+            buy_keyboard = InlineKeyboardMarkup(
                 [
-                    InlineKeyboardButton(
-                        "🎁 Купить пакет и получить видео в подарок",
-                        url="https://getveostudio.app"
-                    )
+                    [
+                        InlineKeyboardButton(
+                            "🎁 Купить пакет и получить видео в подарок",
+                            url="https://getveostudio.app",
+                        )
+                    ]
                 ]
-            ])
+            )
 
             await query.message.reply_text(
                 "Вы уже использовали бесплатное видео в этом месяце.\n\n"
@@ -206,13 +208,14 @@ if query.data == "create_video":
             return
 
         context.user_data["waiting_prompt"] = True
+        context.user_data["waiting_avatar_text"] = False
 
         await query.message.reply_text(
             "🎬 Напишите, какое видео вы хотите создать.\n\n"
             "Например:\n"
             "Белая лошадь бежит по берегу моря на закате."
         )
-
+        return
 async def text_message(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
