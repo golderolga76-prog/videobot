@@ -212,9 +212,9 @@ async def text_message(
     prompt = update.message.text.strip()
     if context.user_data.get("waiting_avatar_text"):
             
-            context.user_data["waiting_avatar_text"] = False
+        context.user_data["waiting_avatar_text"] = False
 
-        avatar_name = context.user_data.get("avatar_image", "office")
+    avatar_name = context.user_data.get("avatar_image", "office")
 
         status_message = await update.message.reply_text(
             "🎭 Создаю видео вашего AI-двойника...\n\n"
