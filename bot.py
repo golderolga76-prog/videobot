@@ -124,23 +124,37 @@ async def button_click(
     
     print("CALLBACK:", query.data, "USER:", query.from_user.id)
     
-    if query.data == "my_avatar":
+if query.data == "my_avatar":
         print("ENTERED MY_AVATAR")
-       if str(query.from_user.id) != str(ADMIN_ID):
-        await query.edit_message_text("Эта функция недоступна.")
-        return
+
+        if str(query.from_user.id) != str(ADMIN_ID):
+            await query.edit_message_text("Эта функция недоступна.")
+            return
 
         keyboard = [
             [
-                print("ABOUT TO SHOW AVATAR MENU")
-                InlineKeyboardButton("🏢 Офис", callback_data="avatar:office"),
-                InlineKeyboardButton("🤖 AI-студия", callback_data="avatar:studio_beige"),
+                InlineKeyboardButton(
+                    "🏢 Офис",
+                    callback_data="avatar:office",
+                ),
+                InlineKeyboardButton(
+                    "🤖 AI-студия",
+                    callback_data="avatar:studio_beige",
+                ),
             ],
             [
-                InlineKeyboardButton("☕ Кафе", callback_data="avatar:cafe_beige"),
-                InlineKeyboardButton("🩵 Голубой пиджак", callback_data="avatar:blue"),
+                InlineKeyboardButton(
+                    "☕️ Кафе",
+                    callback_data="avatar:cafe_beige",
+                ),
+                InlineKeyboardButton(
+                    "🩵 Голубой пиджак",
+                    callback_data="avatar:blue",
+                ),
             ],
         ]
+
+        print("ABOUT TO SHOW AVATAR MENU")
 
         await query.edit_message_text(
             "👩 Выберите образ для AI-двойника:",
