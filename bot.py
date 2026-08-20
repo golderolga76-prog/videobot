@@ -210,19 +210,19 @@ async def text_message(
         return
       
     prompt = update.message.text.strip()
+
     if context.user_data.get("waiting_avatar_text"):
-            
         context.user_data["waiting_avatar_text"] = False
 
-    avatar_name = context.user_data.get("avatar_image", "office")
+        avatar_name = context.user_data.get("avatar_image", "office")
 
         status_message = await update.message.reply_text(
             "🎭 Создаю видео вашего AI-двойника...\n\n"
             "Сначала создаю голос, затем видео. Это может занять несколько минут."
         )
 
-        try:
-            generate_voice = modal.Function.from_name(
+        try:    
+        generate_voice = modal.Function.from_name(
                 "veostudio-voice",
                 "generate_voice",
             )
