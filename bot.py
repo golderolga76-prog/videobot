@@ -121,6 +121,9 @@ async def button_click(
 ):
     query = update.callback_query
     await query.answer()
+    
+    print("CALLBACK:", query.data, "USER:", query.from_user.id)
+    
     if query.data == "my_avatar":
        if str(query.from_user.id) != str(ADMIN_ID):
 
