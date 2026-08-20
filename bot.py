@@ -58,7 +58,8 @@ def get_user_record(users, user_id):
 
 def main_menu(user_id=None):
     keyboard = [
-        [
+    ]
+    
             InlineKeyboardButton(
                 "🎬 Создать видео",
                 callback_data="create_video",
@@ -88,7 +89,9 @@ if str(user_id) == str(ADMIN_ID):
                 )
             ]
         )
-    return InlineKeyboardMarkup(keyboard)
+
+
+return InlineKeyboardMarkup(keyboard)
 
 
 async def start(
