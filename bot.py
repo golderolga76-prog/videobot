@@ -58,8 +58,7 @@ def get_user_record(users, user_id):
 
 def main_menu(user_id=None):
     keyboard = [
-    ]
-    
+        [
             InlineKeyboardButton(
                 "🎬 Создать видео",
                 callback_data="create_video",
@@ -68,7 +67,7 @@ def main_menu(user_id=None):
         [
             InlineKeyboardButton(
                 "🤖 AI Assistant",
-            url="https://t.me/AIasistent_bot",
+                url="https://t.me/AIasistent_bot",
             )
         ],
         [
@@ -79,20 +78,17 @@ def main_menu(user_id=None):
         ],
     ]
 
-if str(user_id) == str(ADMIN_ID):
-
-     keyboard.append(
+    if str(user_id) == str(ADMIN_ID):
+        keyboard.append(
             [
                 InlineKeyboardButton(
-                    "👩 Мой AI-двойник",
+                    "👱 Мой AI-двойник",
                     callback_data="my_avatar",
                 )
             ]
         )
 
-
-return InlineKeyboardMarkup(keyboard)
-
+    return InlineKeyboardMarkup(keyboard)
 
 async def start(
     update: Update,
