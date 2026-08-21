@@ -143,7 +143,7 @@ async def button_click(
             ],
             [
                 InlineKeyboardButton(
-                    "☕ Кафе",
+                    "☕️ Кафе",
                     callback_data="avatar:cafe_beige",
                 ),
                 InlineKeyboardButton(
@@ -154,50 +154,17 @@ async def button_click(
             [
                 InlineKeyboardButton(
                     "🎥 Видео-двойник",
-                    callback_data="video_twin",
+                   callback_data="video_twin",
                 ),
             ],
-        ]
 
         await query.edit_message_text(
             "👩 Выберите образ для AI-двойника:",
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
         return
-        if query.data == "video_twin":
-            keyboard = [
-                [
-                InlineKeyboardButton("🏢 Офис", callback_data="twin:office"),
-                InlineKeyboardButton("🤖 AI-студия", callback_data="twin:studio_beige"),
-                          ],
-                          [
-                InlineKeyboardButton("☕ Кафе", callback_data="twin:cafe_beige"),
-                InlineKeyboardButton("🩵 Голубой пиджак", callback_data="twin:blue"),
-                          ],
-                ] 
 
-                 await query.edit_message_text(
-            "🎥 Выберите образ для Видео-двойника:",
-            reply_markup=InlineKeyboardMarkup(keyboard),
-              )
-               return
     # Выбор образа AI-двойника
-    if query.data.startswith("twin:"):
-        if str(query.from_user.id) != str(ADMIN_ID):
-            await query.edit_message_text("Эта функция недоступна.")
-            return
-
-    avatar_name = query.data.split(":", 1)[1]
-
-    context.user_data["twin_avatar"] = avatar_name
-    context.user_data["waiting_twin_video"] = True
-
-    await query.edit_message_text(
-        "🎥 Образ выбран.\n\n"
-        "Теперь отправьте короткое видео 4–6 секунд.\n"
-        "Смотрите в камеру, двигайтесь спокойно и без резких поворотов головы."
-    )
-    return
     if query.data.startswith("avatar:"):
         if str(query.from_user.id) != str(ADMIN_ID):
             await query.edit_message_text("Эта функция недоступна.")
