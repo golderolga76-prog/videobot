@@ -151,7 +151,12 @@ async def button_click(
                     callback_data="avatar:blue",
                 ),
             ],
-        ]
+            [
+                InlineKeyboardButton(
+                    "🎥 Видео-двойник",
+                   callback_data="video_twin",
+                ),
+            ],
 
         await query.edit_message_text(
             "👩 Выберите образ для AI-двойника:",
