@@ -186,9 +186,9 @@ async def button_click(
     return
     # Выбор образа AI-двойника
     if query.data.startswith("twin:"):
-    if str(query.from_user.id) != str(ADMIN_ID):
-        await query.edit_message_text("Эта функция недоступна.")
-        return
+        if str(query.from_user.id) != str(ADMIN_ID):
+            await query.edit_message_text("Эта функция недоступна.")
+            return
 
     avatar_name = query.data.split(":", 1)[1]
 
