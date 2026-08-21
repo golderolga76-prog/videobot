@@ -130,7 +130,7 @@ async def button_click(
             await query.edit_message_text("Эта функция недоступна.")
             return
 
-        keyboard = [
+         keyboard = [
             [
                 InlineKeyboardButton(
                     "🏢 Офис",
