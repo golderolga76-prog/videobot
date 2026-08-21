@@ -165,22 +165,22 @@ async def button_click(
         )
         return
         if query.data == "video_twin":
-        keyboard = [
-            [
+            keyboard = [
+                [
                 InlineKeyboardButton("🏢 Офис", callback_data="twin:office"),
                 InlineKeyboardButton("🤖 AI-студия", callback_data="twin:studio_beige"),
-            ],
-            [
+                          ],
+                          [
                 InlineKeyboardButton("☕ Кафе", callback_data="twin:cafe_beige"),
                 InlineKeyboardButton("🩵 Голубой пиджак", callback_data="twin:blue"),
-            ],
-        ]
+                          ],
+                ] 
 
-        await query.edit_message_text(
+                 await query.edit_message_text(
             "🎥 Выберите образ для Видео-двойника:",
             reply_markup=InlineKeyboardMarkup(keyboard),
-        )
-        return
+              )
+               return
     # Выбор образа AI-двойника
     if query.data.startswith("twin:"):
         if str(query.from_user.id) != str(ADMIN_ID):
