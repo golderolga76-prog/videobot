@@ -185,6 +185,22 @@ async def button_click(
     )
     return
     # Выбор образа AI-двойника
+    if query.data.startswith("twin:"):
+    if str(query.from_user.id) != str(ADMIN_ID):
+        await query.edit_message_text("Эта функция недоступна.")
+        return
+
+    avatar_name = query.data.split(":", 1)[1]
+
+    context.user_data["twin_avatar"] = avatar_name
+    context.user_data["waiting_twin_video"] = True
+
+    await query.edit_message_text(
+        "🎥 Образ выбран.\n\n"
+        "Теперь отправьте короткое видео 4–6 секунд.\n"
+        "Смотрите в камеру, двигайтесь спокойно и без резких поворотов головы."
+    )
+    return
     if query.data.startswith("avatar:"):
         if str(query.from_user.id) != str(ADMIN_ID):
             await query.edit_message_text("Эта функция недоступна.")
