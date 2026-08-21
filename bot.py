@@ -164,11 +164,11 @@ async def button_click(
         )
         return
     if query.data == "video_twin":
-    if str(query.from_user.id) != str(ADMIN_ID):
-        await query.edit_message_text("Эта функция недоступна.")
-        return
+        if str(query.from_user.id) != str(ADMIN_ID):
+            await query.edit_message_text("Эта функция недоступна.")
+            return
 
-    keyboard = [
+        keyboard = [
         [
             InlineKeyboardButton("🏢 Офис", callback_data="twin:office"),
             InlineKeyboardButton("🤖 AI-студия", callback_data="twin:studio_beige"),
