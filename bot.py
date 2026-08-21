@@ -130,7 +130,7 @@ async def button_click(
             await query.edit_message_text("Эта функция недоступна.")
             return
 
-         keyboard = [
+        keyboard = [
             [
                 InlineKeyboardButton(
                     "🏢 Офис",
@@ -143,7 +143,7 @@ async def button_click(
             ],
             [
                 InlineKeyboardButton(
-                    "☕️ Кафе",
+                    "☕ Кафе",
                     callback_data="avatar:cafe_beige",
                 ),
                 InlineKeyboardButton(
@@ -154,10 +154,11 @@ async def button_click(
             [
                 InlineKeyboardButton(
                     "🎥 Видео-двойник",
-                   callback_data="video_twin",
+                    callback_data="video_twin",
                 ),
             ],
-            ]
+        ]
+
         await query.edit_message_text(
             "👩 Выберите образ для AI-двойника:",
             reply_markup=InlineKeyboardMarkup(keyboard),
